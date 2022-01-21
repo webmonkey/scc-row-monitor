@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 
-import requests
-import json
 from bs4 import BeautifulSoup
+import json
+import requests
+import telegram_send
 
 SCCurl = 'https://www.surreycc.gov.uk/land-planning-and-development/countryside/footpaths-byways-and-bridleways/rights-of-way-public-notices'
 lastFileName = "last_state"
@@ -55,11 +56,28 @@ def findRemovedByways(last,current):
 currentByways = getByways(SCCurl)
 lastByways = loadByways(lastFileName)
 
-print("New Byways Entries")
-print(findNewByways(lastByways,currentByways))
-print("Removed Byways Entries")
-print(findRemovedByways(lastByways,currentByways))
+newNotices = findNewByways(lastByways,currentByways)
+removedNotices = findRemovedByways(lastByways,currentByways)
+
+telegramMessages = []
+
+if len(newNotices) > 0:
+    newNoticesText = "*New Byways Notices*\n"
+    for notice in newNotices.keys():
+        newNoticesText += notice +" - "+ newNotices[notice] +"\n\n"
+
+    telegramMessages.append(newNoticesText)
 
 
+if len(removedNotices) > 0:
+    removedNoticesText = "*Removed Byways Notices*\n"
+    for notice in removedNotices.keys():
+        removedNoticesText += notice +" - "+ removedNotices[notice] +"\n\n"
 
-saveByways(currentByways,lastFileName)
+    telegramMessages.append(removedNoticesText)
+
+
+if len(telegramMessages) > 0:
+    telegram_send.send(messages=telegramMessages, conf="test.conf",parse_mode="markdown")
+
+#saveByways(currentByways,lastFileName)
