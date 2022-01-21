@@ -7,6 +7,7 @@ import telegram_send
 
 SCCurl = 'https://www.surreycc.gov.uk/land-planning-and-development/countryside/footpaths-byways-and-bridleways/rights-of-way-public-notices'
 lastFileName = "last_state"
+telegramConfig = "test.conf"
 
 def getByways(url):
 
@@ -78,6 +79,6 @@ if len(removedNotices) > 0:
 
 
 if len(telegramMessages) > 0:
-    telegram_send.send(messages=telegramMessages, conf="test.conf",parse_mode="markdown")
+    telegram_send.send(messages=telegramMessages, conf=telegramConfig,parse_mode="markdown")
 
 #saveByways(currentByways,lastFileName)
