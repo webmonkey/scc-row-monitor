@@ -53,12 +53,19 @@ def findRemovedByways(last,current):
 
     return removedByways
 
+print("Starting...")
 
 currentByways = getByways(SCCurl)
 lastByways = loadByways(lastFileName)
 
+print(str(len(currentByways)) +" current byways")
+print(str(len(lastByways)) +" byways from the last run")
+
 newNotices = findNewByways(lastByways,currentByways)
 removedNotices = findRemovedByways(lastByways,currentByways)
+
+print(str(len(newNotices)) +" new notices")
+print(str(len(removedNotices)) +" removed notices")
 
 telegramMessages = []
 
@@ -81,4 +88,8 @@ if len(removedNotices) > 0:
 if len(telegramMessages) > 0:
     telegram_send.send(messages=telegramMessages, conf=telegramConfig,parse_mode="markdown")
 
+print("Saving data")
+
 saveByways(currentByways,lastFileName)
+
+print("Exiting...")
